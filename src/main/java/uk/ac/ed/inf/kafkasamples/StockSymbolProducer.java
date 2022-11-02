@@ -15,7 +15,7 @@ import java.util.Random;
 
 public class StockSymbolProducer {
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+        public static void main(String[] args) throws IOException, InterruptedException {
         if (args.length != 1) {
             System.out.println("Please provide the configuration file path as a command line argument");
             System.exit(1);
@@ -24,7 +24,6 @@ public class StockSymbolProducer {
         var producer = new StockSymbolProducer();
         producer.process(args[0]);
     }
-
 
     // We'll reuse this function to load properties from the Consumer as well
     public static Properties loadConfig(final String configFile) throws IOException {
