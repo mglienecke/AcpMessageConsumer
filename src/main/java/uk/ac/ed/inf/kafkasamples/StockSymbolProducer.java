@@ -62,7 +62,7 @@ public class StockSymbolProducer {
 //        }
 
         for (int i = 0; i < symbols.length; i++) {
-            currentStockValue[i] = new Double(i + 30);
+            currentStockValue[i] = (double) (i + 30);
         }
 
         int recordCount = 0;
@@ -89,11 +89,9 @@ public class StockSymbolProducer {
                 recordCount++;
             }
 
-            Thread.sleep(500);
+            // Thread.sleep(100);
             System.out.println(recordCount + " records sent to Kafka");
         }
-
-
     }
 
 //
