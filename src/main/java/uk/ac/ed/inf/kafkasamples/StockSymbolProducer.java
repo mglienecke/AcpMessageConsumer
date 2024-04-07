@@ -48,19 +48,6 @@ public class StockSymbolProducer {
         String[] symbols = ((String) kafkaPros.get(StockSymbolsConfig)).split(",");
         Double[] currentStockValue = new Double[symbols.length];
 
-//
-//        for (int i = 0; i < symbols.length; i++){
-//
-//            String json = readUrl("https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/2021-07-22/2021-07-22?adjusted=true&sort=asc&limit=120&apiKey=4wIZm3ROOwpH8V8vfwmC3daRN2UNfKY4");
-//
-//            Gson gson = new Gson();
-//            Page page = gson.fromJson(json, Page.class);
-//
-//            System.out.println(page.title);
-//            for (Item item : page.items)
-//                System.out.println("    " + item.title);
-//        }
-
         for (int i = 0; i < symbols.length; i++) {
             currentStockValue[i] = (double) (i + 30);
         }
@@ -93,27 +80,5 @@ public class StockSymbolProducer {
             System.out.println(recordCount + " records sent to Kafka");
         }
     }
-
-//
-//    private static String readUrl(String urlString) throws Exception {
-//        BufferedReader reader = null;
-//        try {
-//            URL url = new URL(urlString);
-//            reader = new BufferedReader(new InputStreamReader(url.openStream()));
-//            StringBuffer buffer = new StringBuffer();
-//            int read;
-//            char[] chars = new char[1024];
-//            while ((read = reader.read(chars)) != -1)
-//                buffer.append(chars, 0, read);
-//
-//            return buffer.toString();
-//        } finally {
-//            if (reader != null)
-//                reader.close();
-//        }
-//    }
-
-
-
 }
 

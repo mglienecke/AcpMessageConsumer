@@ -1,8 +1,10 @@
 # bootstrap.servers=localhost:9092
-bootstrap.servers=pkc-ldvmy.centralus.azure.confluent.cloud:9092
+# bootstrap.servers=pkc-ldvmy.centralus.azure.confluent.cloud:9092
+bootstrap.servers=pkc-l6wr6.europe-west2.gcp.confluent.cloud:9092
 
 security.protocol=SASL_SSL
-sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username='SWGKJ6FAY5A6MJ5P' password='7NgrIzr5igo+j3G59RVUroRUVRVKT5tIXJYPXmaMtRmkLIOLlQKf6Dqg6JXeFQLt';
+# sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username='LDHZLI34XJPV3Y4I' password='6go6qjtVIOs8cXwlmtd8wOFCs+3iNNI6U46AqZNscekiZKD5JEUPGm803zKibQRO';
+sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username='4GSTTUONP6KZVGEU' password='47Ix7yZwg9mu3viEKdxuIcH1/ZRWFQEGAbVWFFENHqZOhmoRdp1v4NjmE+75EUEC';
 sasl.mechanism=PLAIN
 
 # Required for correctness in Apache Kafka clients prior to 2.6
