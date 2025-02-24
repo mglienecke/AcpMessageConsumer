@@ -18,6 +18,14 @@ key.deserializer=org.apache.kafka.common.serialization.StringDeserializer
 value.deserializer=org.apache.kafka.common.serialization.StringDeserializer
 
 kafka.topic=stockvalues
-stock.symbols=AAPL,MSFT,GOOG,AMZN,TSLA
+stock.symbols=AAPL,MSFT,GOOG,AMZN,TSLA,JPMC,BARC,LLOY
 
 send.operation.continuous=true
+
+send.operation.channel.provider=rabbitmq
+
+rabbitmq.host=127.0.0.1
+rabbitmq.port=5672
+rabbitmq.queues.inbound=stock_values
+rabbitmq.queues.outbound=processed_stock_values
+rabbitmq.exchange=stock_exchange
