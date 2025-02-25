@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.TimeoutException;
+
 
 /**
  * Abstract base class representing a messaging producer. This class provides
@@ -15,58 +17,54 @@ import java.util.concurrent.TimeoutException;
  * (e.g., RabbitMQ, Kafka) while leaving the concrete implementations of certain
  * methods to the subclasses.
  * <p>
- * The MessagingProducer is responsible for producing messages to a messaging system
+ * The MessagingConsumer is responsible for producing messages to a messaging system
  * in either continuous or non-continuous mode. Configuration properties and other setup
  * details are provided during the creation of the producer.
  */
-public abstract class MessagingProducer {
-    public static final String ContinuousSendConfig = "send.operation.continuous";
+public abstract class MessagingConsumer {
     public static final String SendOperationChannelProvider = "send.operation.channel.provider";
     public static final String StockSymbolsConfig = "stock.symbols";
 
-
     protected final Properties props;
-    protected final boolean continuousMode;
+    protected final HashMap<String, Double> currentSymbolValueMap = new HashMap<>();
 
-    
     /**
-     * Creates and returns a MessagingProducer instance based on the configuration
+     * Creates and returns a MessagingConsumer instance based on the configuration
      * properties specified in the given configuration file. The returned producer
-     * will either be a RabbitMqMessagingProducer or a KafkaMessagingProducer,
+     * will either be a RabbitMqMessagingConsumer or a KafkaMessagingConsumer,
      * depending on the property value of "send.operation.channel.provider" in the
      * configuration file.
      *
      * @param configFile the path to the configuration file containing the producer's
      *                   properties such as connection details and channel provider type.
-     * @return an instance of MessagingProducer, either a RabbitMqMessagingProducer
-     *         or a KafkaMessagingProducer, configured based on the specified properties.
+     * @return an instance of MessagingConsumer, either a RabbitMqMessagingConsumer
+     *         or a KafkaMessagingConsumer, configured based on the specified properties.
      * @throws IOException if there is an error reading the configuration file.
      */
-    public static MessagingProducer getMessagingProducer(String configFile) throws IOException {
+    public static MessagingConsumer getMessagingConsumer(String configFile) throws IOException {
         Properties props = loadConfig(configFile);
-        MessagingProducer producer = null;
+        MessagingConsumer consumer = null;
 
-        if (props.getProperty(SendOperationChannelProvider).equals("rabbitmq")) {
-            producer = new RabbitMqMessagingProducer(props);
-        } else {
-            producer = new KafkaMessagingProducer(props);
-        }
-
-        return producer;
+        return props.getProperty(SendOperationChannelProvider).equals("rabbitmq") ?
+            new RabbitMqMessagingConsumer(props) : new KafkaMessagingConsumer(props);
     }
 
     /**
-     * Constructs a MessagingProducer instance using the provided configuration properties.
+     * Constructs a MessagingConsumer instance using the provided configuration properties.
      * The properties determine the producer's configuration, including continuous mode
      * and other necessary settings for message production.
      *
-     * @param props the configuration properties used for setting up the MessagingProducer.
+     * @param props the configuration properties used for setting up the MessagingConsumer.
      *              The properties may include settings such as messaging provider-specific
      *              configurations and operational mode flags.
      */
-    protected MessagingProducer(Properties props) {
+    protected MessagingConsumer(Properties props) {
         this.props = props;
-        this.continuousMode = Boolean.parseBoolean(props.getProperty(ContinuousSendConfig));
+
+        String[] symbols = ((String) props.get(StockSymbolsConfig)).split(",");
+        for (var symbol : symbols) {
+            currentSymbolValueMap.put(symbol, Double.NaN);
+        }
     }
 
     /**
@@ -74,8 +72,8 @@ public abstract class MessagingProducer {
      * required for message production. Implementation may include setting up connections,
      * channels, or other producer-specific settings based on the chosen messaging provider.
      * <p>
-     * This method must be implemented by subclasses (e.g., RabbitMqMessagingProducer,
-     * KafkaMessagingProducer) to perform provider-specific initialization logic. It is
+     * This method must be implemented by subclasses (e.g., RabbitMqMessagingConsumer,
+     * KafkaMessagingConsumer) to perform provider-specific initialization logic. It is
      * typically invoked before running the producer to ensure all configurations are
      * properly loaded.
      *
@@ -83,7 +81,7 @@ public abstract class MessagingProducer {
      *         issues with the underlying messaging system.
      */
 
-    public abstract void init();
+    public abstract void init() throws IOException, TimeoutException;
     /**
      * Executes the main operation of the messaging producer, responsible for continuously or
      * discretely sending messages to the configured messaging system (e.g., Kafka or RabbitMQ)
@@ -108,20 +106,6 @@ public abstract class MessagingProducer {
      */
     public abstract void run() throws IOException, InterruptedException, TimeoutException;
 
-    protected String createMessage(String key, String value) {
-        return String.format("{\"symbol\":\"%s\",\"value\":\"%s\"}", key, value);
-    }
-
-    protected String getNextSymbol() {
-        String[] symbols = ((String) props.get(StockSymbolsConfig)).split(",");
-        return symbols[new Random().nextInt(symbols.length)];
-    }
-
-    private static int valueCounter = 1;
-
-    protected String getNextValue() {
-        return String.valueOf(valueCounter++);
-    }
 
     /**
      * Loads the configuration properties from a specified file.

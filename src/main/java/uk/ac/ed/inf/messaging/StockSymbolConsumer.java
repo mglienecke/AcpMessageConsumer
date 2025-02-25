@@ -3,7 +3,7 @@ package uk.ac.ed.inf.messaging;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
-public class StockSymbolProducer {
+public class StockSymbolConsumer {
 
     public static void main(String[] args) throws IOException, InterruptedException, TimeoutException {
         if (args.length != 1) {
@@ -11,9 +11,9 @@ public class StockSymbolProducer {
             System.exit(1);
         }
 
-        var producer = MessagingProducer.getMessagingProducer(args[0]);
-        producer.init();
-        producer.run();
+        var consumer = MessagingConsumer.getMessagingConsumer(args[0]);
+        consumer.init();
+        consumer.run();
     }
 }
 
