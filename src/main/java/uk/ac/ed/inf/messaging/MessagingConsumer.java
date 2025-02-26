@@ -43,10 +43,8 @@ public abstract class MessagingConsumer {
      */
     public static MessagingConsumer getMessagingConsumer(String configFile) throws IOException {
         Properties props = loadConfig(configFile);
-        MessagingConsumer consumer = null;
-
-        return props.getProperty(SendOperationChannelProvider).equals("rabbitmq") ?
-            new RabbitMqMessagingConsumer(props) : new KafkaMessagingConsumer(props);
+        return props.getProperty(SendOperationChannelProvider, "kafka").equals("rabbitmq") ?
+                new RabbitMqMessagingConsumer(props) : new KafkaMessagingConsumer(props);
     }
 
     /**

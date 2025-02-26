@@ -81,12 +81,12 @@ public class KafkaMessagingConsumer extends MessagingConsumer {
         int recordCount = 0;
 
         while (true) {
-            ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
+            ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(250));
             for (ConsumerRecord<String, String> record : records) {
                 if (currentSymbolValueMap.containsKey(record.key())) {
                     currentSymbolValueMap.put(record.key(), Double.parseDouble(record.value()));
 
-                    System.out.printf("[%s] %s: %s %s %s %s%n", record.topic(), record.key(), record.value(), record.partition(), record.offset(), record.timestamp());
+                    System.out.printf("[%s] %s: %20s %2s %6s %s%n", record.topic(), record.key(), record.value(), record.partition(), record.offset(), record.timestamp());
                     recordCount++;
                 } else {
                     System.out.printf("Unknown symbol: %s with value: %s encountered%n", record.key(), record.value());

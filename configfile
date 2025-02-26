@@ -8,7 +8,7 @@ sasl.mechanism=PLAIN
 # Required for correctness in Apache Kafka clients prior to 2.6
 client.dns.lookup=use_all_dns_ips
 
-group.id=ACP_CW2_Group
+group.id=ACP_Group
 
 # Best practice for Kafka producer to prevent data loss
 acks=all
@@ -16,13 +16,15 @@ key.serializer=org.apache.kafka.common.serialization.StringSerializer
 value.serializer=org.apache.kafka.common.serialization.StringSerializer
 key.deserializer=org.apache.kafka.common.serialization.StringDeserializer
 value.deserializer=org.apache.kafka.common.serialization.StringDeserializer
+auto.offset.reset=earliest
 
 kafka.topic=stockvalues
 stock.symbols=AAPL,MSFT,GOOG,AMZN,TSLA,JPMC,BARC,LLOY
 
+
 send.operation.continuous=true
 
-send.operation.channel.provider=rabbitmq
+# send.operation.channel.provider=rabbitmq
 
 rabbitmq.host=127.0.0.1
 rabbitmq.port=5672
